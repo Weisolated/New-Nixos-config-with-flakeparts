@@ -1,279 +1,301 @@
-// This config is in the KDL format: https://kdl.dev
-// "/-" comments out the following node.
-// Check the wiki for a full description of the configuration:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Introduction
-config-notification {
-    disable-failed
+// ═══════════════════════════════════════════════════════════════════════
+//                    NIRI WINDOW MANAGER CONFIGURATION
+//                          Adrian's Custom Setup
+// ═══════════════════════════════════════════════════════════════════════
+// Niri Docs: https://niri-wm.github.io/niri/
+// Wiki:      https://github.com/YaLTeR/niri/wiki
+// ═══════════════════════════════════════════════════════════════════════
+
+// ───────────────────────── Noctalia Shell ─────────────────────────────
+// Bindet die Noctalia-Shell-Konfig ein (Bar, Launcher, Notifications…)
+include "./noctalia.kdl"
+
+// ════════════════════════════════════════════════════════════════════
+//  ALLGEMEIN (MISC)
+// ════════════════════════════════════════════════════════════════════
+
+// Bevorzugt Server-Side Decorations -> einheitlicher Look, weniger Bugs
+prefer-no-csd
+
+// Speicherpfad für Screenshots (Datum + Uhrzeit als Dateiname)
+screenshot-path "~/Bilder/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ────────────── Environment Variables ──────────────
+// Werden für ALLE von niri gestarteten Prozesse gesetzt
+environment {
+    ELECTRON_OZONE_PLATFORM_HINT "auto"      // Electron-Apps (Discord, VSCode) nutzen Wayland
+    QT_QPA_PLATFORM "wayland"
+    QT_QPA_PLATFORMTHEME "gtk3"              // Qt-Apps verwenden GTK3-Theme (einheitlicher Look)
+    QT_WAYLAND_DISABLE_WINDOWDECORATION "1"  // Verhindert doppelte Rahmen bei Qt-Apps
+    XDG_CURRENT_DESKTOP "niri"               // Sagt Apps welche DE läuft (für Portals etc.)
+    XDG_SESSION_TYPE "wayland"
 }
-// Outputs from existing configuration
-output "HDMI-A-1" {
-    mode "2560x1440@143.999"
-    scale 1
-    position x=6580 y=0
-    focus-at-startup
+// ────────────── Cursor ──────────────
+cursor {
+    xcursor-theme "Hoshimi-Miyami"  // Custom Cursor-Theme
+    xcursor-size 32                 // Cursor-Größe in Pixel (Standard wäre 24)
 }
 
-output "eDP-1" {
-    mode "1920x1080@144"
-    scale 1
-    position x=0 y=0
+// ────────────── Debug ──────────────
+debug {
+    // Erlaubt Noctalia, Notification-Aktionen + Window-Activation auszulösen
+    honor-xdg-activation-with-invalid-serial
 }
 
-
-gestures {
-    hot-corners {
-        off
-    }
+// ────────────── Hotkey Overlay ──────────────
+hotkey-overlay {
+    skip-at-startup  // Zeigt das Hotkey-Overlay NICHT direkt nach dem Login
 }
 
-// Input device configuration.
-// Find the full list of options on the wiki:
+// ════════════════════════════════════════════════════════════════════
+//  INPUT (Tastatur, Touchpad, Maus)
+// ════════════════════════════════════════════════════════════════════
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
+
 input {
+    // ────────── Tastatur ──────────
     keyboard {
         xkb {
-            // You can set rules, model, layout, variant and options.
-            // For more information, see xkeyboard-config(7).
-
-            // For example:
-            // layout "us,ru"
-            // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
-
-            // If this section is empty, niri will fetch xkb settings
-            // from org.freedesktop.locale1. You can control these using
-            // localectl set-x11-keymap.
+            // Layout überschreiben (auskommentiert -> System-Default)
+            //layout "us"
         }
-
-        // Enable numlock on startup, omitting this setting disables it.
-        numlock
+        numlock  // Numlock automatisch beim Start aktivieren
     }
 
-    // Next sections include libinput settings.
-    // Omitting settings disables them, or leaves them at their default values.
-    // All commented-out settings here are examples, not defaults.
+    // ────────── Touchpad ──────────
     touchpad {
-        // off
-        tap
-        // dwt
-        // dwtp
-        // drag false
-        // drag-lock
-        natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "two-finger"
-        // disabled-on-external-mouse
+        tap             // Tippen = Linksklick
+        natural-scroll  // macOS-Style Scrollen (Inhalt folgt dem Finger)
     }
 
+    // ────────── Maus ──────────
     mouse {
-        // off
-        // natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "no-scroll"
+        // Mausbeschleunigung deaktivieren (für Gaming sinnvoll)
+        //accel-profile "flat"
+        //accel-speed 0.0
     }
 
-    trackpoint {
-        // off
-        // natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "on-button-down"
-        // scroll-button 273
-        // scroll-button-lock
-        // middle-emulation
-    }
-
-    // Uncomment this to make the mouse warp to the center of newly focused windows.
-    // warp-mouse-to-focus
-
-    // Focus windows and outputs automatically when moving the mouse into them.
-    // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
-    // focus-follows-mouse max-scroll-amount="0%"
+    // ────────── Fokus-Verhalten ──────────
+    //focus-follows-mouse                         // Reines Focus-Follows-Mouse
+    workspace-auto-back-and-forth                 // Mod+1 zweimal -> springt zum vorherigen WS zurück
+    focus-follows-mouse max-scroll-amount="40%"   // FFM nur wenn dadurch max 10% gescrollt wird
 }
-// You can configure outputs by their name, which you can find
-// by running `niri msg outputs` while inside a niri instance.
-// The built-in laptop monitor is usually called "eDP-1".
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
-// Remember to uncomment the node by removing "/-"!
 
-// Settings that influence how windows are positioned and sized.
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
+// ════════════════════════════════════════════════════════════════════
+//  DISPLAYS / OUTPUTS
+// ════════════════════════════════════════════════════════════════════
+// Tipp: `niri msg outputs` zeigt die korrekten Display-Namen
+
+output "LG Electronics LG ULTRAGEAR 310MAMBJ3L91" {
+    mode "2560x1440@143.999"  // 1440p @ 144 Hz
+    variable-refresh-rate
+    scale 1                    // Keine HiDPI-Skalierung
+    position x=6580 y=0        // Position im virtuellen Layout (links vom AOC)
+    focus-at-startup        
+}
+
+
+//output "HDMI-A-1" {
+//    mode "1920x1080@60"   
+    
+//}
+
+// ════════════════════════════════════════════════════════════════════
+//  LAYOUT
+// ════════════════════════════════════════════════════════════════════
+
 layout {
-    // Set gaps around windows in logical pixels.
-	gaps 7
-    background-color "transparent"
-    // When to center a column when changing focus, options are:
-    // - "never", default behavior, focusing an off-screen column will keep at the left
-    //   or right edge of the screen.
-    // - "always", the focused column will always be centered.
-    // - "on-overflow", focusing a column will center it if it doesn't fit
-    //   together with the previously focused column.
-    always-center-single-column
-    center-focused-column "never"
-    // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
+    gaps 12                              // Abstand zwischen Fenstern in Pixel
+    center-focused-column "never"          // Fokussierte Spalte NICHT auto-zentrieren
+    always-center-single-column            // …außer wenn nur 1 Spalte da ist -> zentrieren
+    background-color "transparent"         // Wichtig damit Noctalia Wallpaper setzen kann
+
+    // Voreingestellte Spaltenbreiten (mit Mod+R durchschaltbar)
     preset-column-widths {
-        // Proportion sets the width as a fraction of the output width, taking gaps into account.
-        // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
-        // The default preset widths are 1/3, 1/2 and 2/3 of the output.
-        proportion 0.33333
-        proportion 0.5
-        proportion 0.66667
-        // Fixed sets the width in logical pixels exactly.
-        // fixed 1920
+        proportion 0.33333  // 1/3 Bildschirm
+        proportion 0.5      // 1/2 Bildschirm
+        proportion 0.66667  // 2/3 Bildschirm
     }
-    // You can also customize the heights that "switch-preset-window-height" (Mod+Shift+R) toggles between.
-    // preset-window-heights { }
-    // You can change the default width of the new windows.
     default-column-width { proportion 0.5; }
-    // If you leave the brackets empty, the windows themselves will decide their initial width.
-    // default-column-width {}
-    // By default focus ring and border are rendered as a solid background rectangle
-    // behind windows. That is, they will show up through semitransparent windows.
-    // This is because windows using client-side decorations can have an arbitrary shape.
-    //
-    // If you don't like that, you should uncomment `prefer-no-csd` below.
-    // Niri will draw focus ring and border *around* windows that agree to omit their
-    // client-side decorations.
-    //
-    // Alternatively, you can override it with a window rule called
-    // `draw-border-with-background`.
-  focus-ring {
-        // off
-        width 2
-        active-color "#ffffff33"
-     }    
-border {
-        
-        width 1
-        active-color   "#707070"      // Neutral gray
-        inactive-color "#d0d0d0"      // Light gray
-        urgent-color   "#cc4444"      // Softer red
-    }
-    struts {
-    }
-      shadow {
-            softness 30
-            spread 5
-            offset x=0 y=5
-            color "#0007"
-        }
+    // Struts -> reservierter Platz an Bildschirmrändern (für Bars etc.)
+    struts {}
 }
-layer-rule {
-  match namespace="^noctalia-overview*"
-  place-within-backdrop true
-}
+
+// ────────────── Overview (Mod+Tab) ──────────────
 overview {
     workspace-shadow {
-        off
+        on  // Schatten unter Workspace-Vorschauen
     }
 }
-// Add lines like this to spawn processes at startup.
-// Note that running niri as a session supports xdg-desktop-autostart,
-// which may be more convenient to use.
-// See the binds section below for more spawn examples.
-// This line starts waybar, a commonly used bar for Wayland compositors.
-environment {
-  XDG_CURRENT_DESKTOP "qt6ct"
-  XDG_CURRENT_DESKTOP "niri"
-  QT_QPA_PLATFORM "wayland"
-  ELECTRON_OZONE_PLATFORM_HINT "auto"
-  QT_QPA_PLATFORMTHEME "qt6ct"
-  SQL_VIDEODRIVER "wayland"
-  _JAVA_AWT_WM_NONREPARENTING "1"
- DISPLAY ":1"
-//  XWAYLAND_ENABLE "0"
 
-  // NVIDIA Gaming Optimizations
-  __GL_GSYNC_ALLOWED "1"
-  __GL_VRR_ALLOWED "1"
-  PROTON_ENABLE_NVAPI "1"
-  PROTON_HIDE_NVIDIA_GPU "0"
-  PROTON_ENABLE_NGX_UPDATER "1"
-
-}
-hotkey-overlay {
-    skip-at-startup
+// ────────────── Gestures ──────────────
+gestures {
+    hot-corners {
+        off  // Hot-Corners deaktiviert
+    }
 }
 
-//spawn-at-startup "filen-desktop"
-spawn-at-startup "noctalia-shell"
-spawn-at-startup "lxqt-policykit-agent"
-//spawn-sh-at-startup "/nix/store/$(ls -la /nix/store | grep polkit-kde-agent | grep '^d' | awk '{print $9}')/libexec/polkit-kde-authentication-agent-1"
-//spawn-at-startup "env" "XDG_MENU_PREFIX=arch-" "kbuildsycoca6" // dolphin file association 
-spawn-at-startup "vicinae" "server"
+// ════════════════════════════════════════════════════════════════════
+//  AUTOSTART
+// ════════════════════════════════════════════════════════════════════
 
-prefer-no-csd
-screenshot-path "~/Bilder/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+// Noctalia-Shell beim Login starten (Bar, Notifications, Launcher…)
+spawn-sh-at-startup "qs -c noctalia-shell"
+
+
+// ════════════════════════════════════════════════════════════════════
+//  ANIMATIONEN
+// ════════════════════════════════════════════════════════════════════
+
 animations {
-		
-  workspace-switch {
-	off
-     }
-   
-     horizontal-view-movement {
+    // Workspace-Wechsel (Spring -> natürliches Schwingen)
+    workspace-switch {
         spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
-     }
-     window-movement {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
-     }
-     window-resize {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
-     }
-     config-notification-open-close {
-         spring damping-ratio=1.0 stiffness=923 epsilon=0.001
-     }
-    screenshot-ui-open {
-        off 
-	duration-ms 200
+    }
+    // Fenster öffnen
+    window-open {
+        duration-ms 200
         curve "ease-out-quad"
-     }
-     overview-open-close {
-         spring damping-ratio=0.85 stiffness=1900 epsilon=0.0001
-     }
-    slowdown 1
- }
+    }
+    // Fenster schließen
+    window-close {
+        duration-ms 200
+        curve "ease-out-cubic"
+    }
+    // Horizontales Scrollen zwischen Spalten
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+    // Fenster verschieben
+    window-movement {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+    }
+    // Fenster Größe ändern
+    window-resize {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+    // Notification beim Reload der Config
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1200 epsilon=0.001
+    }
+    // Screenshot-UI Animation
+    screenshot-ui-open {
+        duration-ms 300
+        curve "ease-out-quad"
+    }
+    // Overview öffnen/schließen (Mod+Tab)
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+}
 
-workspace "1" {
-open-on-output "HDMI-A-1"
- }
-workspace "2" {
-open-on-output "HDMI-A-1"
- }
-workspace "3" {
-open-on-output "HDMI-A-1"
- }
-workspace "4" {
-open-on-output "HDMI-A-1"
- }
-workspace "1+1" {
- }
+// ════════════════════════════════════════════════════════════════════
+//  WORKSPACES
+// ════════════════════════════════════════════════════════════════════
+
+workspace "1" { }
+workspace "2" { }
+workspace "3" { }
+workspace "4" { }
+
+window-rule {
+    match app-id="twintaillauncher"
+    match app-id="steam_proton"    
+    match app-id="org.prismlauncher.PrismLauncher"
+    match app-id="steam"
+    match app-id="io.mrarm.mcpelauncher-ui-qt"
+    match app-id="mcpelauncher-client"
+    match title="Heroic Games Launcher"
+    match app-id="eden"
+    match app-id="lutris"
+    open-focused true
+    open-on-workspace "3"
+}
+
 window-rule {
     match app-id="vesktop"
+    match title="YouTube Music"
     open-on-workspace "4"
 }
 
 
-// Window rules let you adjust behavior for individual windows.
-// Find more information on the wiki:
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
-// Work around WezTerm's initial configure bug
-// by setting an empty default-column-width.
+
+// ════════════════════════════════════════════════════════════════════
+//  WINDOW & LAYER RULES
+// ════════════════════════════════════════════════════════════════════
+
+// ────────────── Globale Regel ──────────────
+// Gilt für ALLE Fenster (sofern nicht überschrieben)
 window-rule {
-    // This regular expression is intentionally made as specific as possible,
-    // since this is the default config, and we want no false positives.
-    // You can get away with just app-id="wezterm" if you want.
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
+    geometry-corner-radius 6  // Abgerundete Ecken (20px Radius)
+    clip-to-geometry true      // Inhalt wird an Form gecuttet -> saubere Rundungen
 }
+
+// ────────────── Steam ──────────────
+// Steam-Subwindows floaten lassen (außer Hauptfenster)
+window-rule {
+    match app-id="steam"
+    exclude title=r#"^[Ss]team$"#
+    open-floating true
+}
+
+// Steam-Notifications unten rechts positionieren
+window-rule {
+    match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+    open-focused false  // Notification stiehlt nicht den Fokus
+}
+
+// ────────────── Noctalia / Quickshell Layer ──────────────
+// Quickshell-Overview innerhalb des Backdrops platzieren
+layer-rule {
+    match namespace="^quickshell-overview$"
+    place-within-backdrop true
+}
+// Noctalia-Overview innerhalb des Backdrops platzieren
+layer-rule {
+    match namespace="^noctalia-overview*"
+    place-within-backdrop true
+}
+
+// ────────────── Bitwarden ──────────────
+// Bitwarden vor Screen-Capture schützen (Privacy)
+window-rule {
+    match app-id=r#"Bitwarden$"#
+    block-out-from "screen-capture"
+}
+
+// ────────────── Pavucontrol ──────────────
+window-rule {
+    match app-id="pavucontrol"
+    opacity 0.95
+    open-floating true
+    default-column-width { fixed 900; }
+    default-window-height { fixed 1000; }
+}
+
+// ────────────── Authentifizierungs-Dialoge ──────────────
+window-rule {
+    match title="Authentication Required"
+    opacity 0.95
+    open-floating true
+}
+
+// ────────────── PiP / Zoom ──────────────
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    match app-id="zoom"
+    open-floating true
+}
+
+// ────────────── GNOME-Apps ──────────────
+// GNOME-Apps haben eigene Rahmen -> niri zeichnet keinen Hintergrund
 window-rule {
     match app-id=r#"^org\.gnome\."#
     draw-border-with-background false
-    geometry-corner-radius 20
-    clip-to-geometry true
 }
+
+// System-Tools mittelgroß und nicht-floating öffnen
 window-rule {
     match app-id=r#"^gnome-control-center$"#
     match app-id=r#"^pavucontrol$"#
@@ -281,119 +303,240 @@ window-rule {
     default-column-width { proportion 0.5; }
     open-floating false
 }
+
+// Kleine Tools floaten lassen
 window-rule {
     match app-id=r#"^gnome-calculator$"#
     match app-id=r#"^galculator$"#
     match app-id=r#"^blueman-manager$"#
-    //match app-id=r#"^org\.gnome\.Nautilus$"#
-    //match app-id=r#"^steam$"#
     match app-id=r#"^xdg-desktop-portal$"#
     match app-id="org.gnome.NautilusPreviewer"
     open-floating true
 }
+
+// ────────────── Terminals & andere Apps ──────────────
+// Apps mit eigener Decoration -> kein Border-Hintergrund
 window-rule {
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
     match app-id="Alacritty"
     match app-id="zen"
     match app-id="vesktop"
-    match app-id="kitty"
+    match app-id="ghostty"
     draw-border-with-background false
 }
+
+// Terminals mit leichter Transparenz + Blur
 window-rule {
-    match app-id="kitty"    
-    match app-id="ghostty"   
-//    match app-id="cava"
-//    match app-id="lutris"
-//    match app-id="heroic"
-//    match app-id="steam"
-//    match app-id=r#"Bitwarden$"#
-//    match app-id="io.github.kolunmi.Bazaar"
-//    match app-id="org.gnome.Calculator"
-//    match app-id="org.gnome.TextEditor"
-//    match app-id="vesktop"
-//    match app-id="localsend_app"
-//    match app-id="Twintaillauncher" 
-opacity 0.85
+    match app-id="kitty"
+    match app-id="ghostty"
+    opacity 0.8
+    background-effect {
+        blur true
+    }
 }
 
 window-rule {
-    geometry-corner-radius 7
-    clip-to-geometry true
+    match app-id="eden"
+    open-focused true
+    open-fullscreen true
+}
+
+// Standart Settings wie Blur Maximiert
+window-rule {
+    match app-id="zen"
+    background-effect {
+        blur true
+    }
 }
 
 window-rule {
-    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    match app-id="zoom"
-    open-floating true
+    match app-id="helium"
+    match app-id="heroic"
+    match title="btop"
+    match app-id="zen"
+    open-maximized true
 }
 
-layer-rule {
-    match namespace="^quickshell-overview$"
-    place-within-backdrop true
-}
 
-debug {
-    honor-xdg-activation-with-invalid-serial
 
-}
-window-rule {
-    match app-id="pavucontrol"
-    opacity 0.95
-    open-floating true
-    //efault-floating-position x=100 y=200
-    default-column-width { fixed 900; }
-    default-window-height { fixed 1000; }
-}
-window-rule {
-    match title="Authentication Required"
-    opacity 0.95
-    open-floating true
-}
 
-window-rule {
-    match app-id=r#"Bitwarden$"#
-    block-out-from "screen-capture"
-}
 
-window-rule {
-    match app-id="vicinae"
-}
-
+// ════════════════════════════════════════════════════════════════════
+//  KEYBINDS
+// ════════════════════════════════════════════════════════════════════
 
 binds {
-    Mod+T hotkey-overlay-title="Open Terminal" { spawn "ghostty"; }
-    //Mod+428u  hotkey-overlay-title="fuzzeld" { spawn "fuzzel"; }
-    Mod+Z hotkey-overlay-title="Open Pavucontrol" { spawn "pavucontrol"; }
-    Mod+X hotkey-overlay-title="Open Zen" { spawn "zen-browser"; }
-    Mod+Alt+Space repeat=false { spawn "vicinae" "toggle"; }
-//Mod+Alt+Space { spawn-sh "noctalia-shell ipc call launcher toggle"; }
+    // ───────── Workspace-Fokus ─────────
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
 
-    XF86AudioRaiseVolume { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
-    XF86AudioLowerVolume { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
-    XF86AudioMute { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
-    XF86MonBrightnessUp { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
-    XF86MonBrightnessDown { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
-    Mod+S { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
-   Mod+Shift+P { power-off-monitors; }
+    // ───────── Workspace-Navigation (vertikal) ─────────
+    Mod+I         { focus-workspace-up; }
+    Mod+U         { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+
+    // ───────── Spalte direkt zu Workspace X bewegen ─────────
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    // ───────── Workspace verschieben ─────────
+    Mod+Shift+I         { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+
+        // ───────── Screenshots ─────────
+    Mod+Shift+S          { screenshot; }              // Interaktives Screenshot-Tool
+    XF86Launch1          { screenshot; }
+    Alt+Print            { screenshot-window; }       // Nur aktives Fenster
+    Alt+XF86Launch1      { screenshot-window; }
+    Mod+Shift+Ctrl+S     { screenshot-screen; }       // Ganzer Bildschirm
+    Ctrl+XF86Launch1     { screenshot-screen; }
+
+   // ───────── Spalten-Management ─────────
+    Mod+BracketLeft   { consume-or-expel-window-left; }   // Fenster nach links in Spalte aufnehmen/auswerfen
+    Mod+BracketRight  { consume-or-expel-window-right; }
+    Mod+C             { center-column; }                  // Aktuelle Spalte zentrieren
+    Mod+Ctrl+C        { center-visible-columns; }         // Alle sichtbaren Spalten zentrieren
+    Mod+Ctrl+End      { move-column-to-last; }
+    Mod+Ctrl+Home     { move-column-to-first; }
+    Mod+Ctrl+F        { expand-column-to-available-width; } // Spalte auf verfügbare Breite ziehen
+    Mod+Ctrl+R        { reset-window-height; }            // Fenster-Höhe zurücksetzen
+    Mod+End           { focus-column-last; }
+    Mod+Home          { focus-column-first; }
+    Mod+R             { switch-preset-column-width; }     // Preset-Breite durchschalten
+    Mod+Period        { expel-window-from-column; }       // Fenster aus Spalte rauswerfen
+
+    // ───────── Monitor-Fokus ─────────
+    Mod+Ctrl+H     { focus-monitor-left; }
+    Mod+Ctrl+J     { focus-monitor-down; }
+    //Mod+Ctrl+K     { focus-monitor-up; }
+    Mod+Ctrl+L     { focus-monitor-right; }
+    Mod+Ctrl+Left  { focus-monitor-left; }
+    Mod+Ctrl+Right { focus-monitor-right; }
+
+    // ───────── Spalte zwischen Monitoren bewegen ─────────
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+
+    // ───────── Fenster-Navigation ─────────
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    //Mod+J { focus-window-down; }
+    //Mod+K { focus-window-up; }
+    //Mod+L { focus-column-right; }
+
+    // ───────── Fenster verschieben ─────────
+    Mod+Shift+Down  { move-window-down; }
+    Mod+Shift+Up    { move-window-up; }
+    Mod+Shift+Left  { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+H     { move-column-left; }
+    Mod+Shift+J     { move-window-down; }
+    //Mod+Shift+K     { move-window-up; }
+    Mod+Shift+L     { move-column-right; }
+
+    // ───────── Mausrad-Navigation ─────────
+    Mod+WheelScrollLeft        { focus-column-left; }
+    Mod+WheelScrollRight       { focus-column-right; }
+    Mod+Shift+WheelScrollUp    { focus-column-left; }
+    Mod+Shift+WheelScrollDown  { focus-column-right; }
+    Mod+Ctrl+WheelScrollLeft   { move-column-left; }
+    Mod+Ctrl+WheelScrollRight  { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+
+    // ───────── Fenstergröße anpassen ─────────
+    Mod+Minus       { set-column-width "-10%"; }   // Spalte schmaler
+    Mod+Plus        { set-column-width "+10%"; }   // Spalte breiter
+    Mod+Shift+Minus { set-window-height "-10%"; }  // Fenster niedriger
+    Mod+Shift+Plus  { set-window-height "+10%"; }  // Fenster höher
+    Mod+Shift+R     { switch-preset-window-height; } // Preset-Höhe durchschalten
+
+    // ───────── Fenster-Aktionen ─────────
+    Mod+F                   { maximize-column; }                          // Spalte maximieren
+    Mod+Shift+F             { fullscreen-window; }                        // Vollbild
+    Mod+Q repeat=false      { close-window; }                             // Fenster schließen
+    Mod+Shift+T             { toggle-window-floating; }                   // Floating umschalten
+    Mod+Shift+V             { switch-focus-between-floating-and-tiling; } // Fokus floating <-> tiling
+    Mod+W                   { toggle-column-tabbed-display; }             // Tabbed-Modus für Spalte
+
+    // ───────── System ─────────
+    Mod+Shift+P         { power-off-monitors; }                  // Monitore aus
+    Mod+Shift+E         { quit; }                                // Niri beenden (Logout)
+    Mod+Escape          { toggle-keyboard-shortcuts-inhibit; }   // Tastenkürzel-Sperre für VMs etc.
+    Mod+Shift+Slash     { show-hotkey-overlay; }
+    Mod+Shift+Backspace { show-hotkey-overlay; }
+    Mod+Tab repeat=false { toggle-overview; }                    // Workspace-Übersicht
+  
+    // ───────── Apps starten ─────────
+    Mod+E     hotkey-overlay-title="File Manager: Nemo" { spawn "nemo"; }
+    Mod+T hotkey-overlay-title="Open Terminal" { spawn "ghostty"; }
+    Mod+Z hotkey-overlay-title="Open Pavucontrol" { spawn "pavucontrol"; }
+    Mod+X hotkey-overlay-title="Open Zen-Browser" { spawn "zen-browser"; }
+    Mod+B       hotkey-overlay-title="Open Browser: Helium" { spawn "helium-browser"; }
+
+
+    // ─── Media Controls ───
+    XF86AudioRaiseVolume    allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
+    XF86AudioLowerVolume    allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
+    XF86AudioMute           allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteOutput"; }
+    XF86AudioMicMute        allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteInput"; }
+    XF86AudioNext           allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media next"; }
+    XF86AudioPrev           allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media previous"; }
+    XF86AudioPlay           allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media playPause"; }
+    XF86AudioPause          allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media playPause"; }
+
+    // ───────── Noctalia Shell IPC ─────────    
+    Mod+S       hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
+    Mod+Space	hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
+    Mod+D		hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call wallpaper toggle"; }
+    Mod+A	    hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call plugin:wallcards toggle"; }
+    Mod+L      hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+
+    // ───────── Scripts ─────────
+    Mod+G        { spawn "fish" "-c" "gif"; }            // ⭐ Picker
+    Mod+Shift+G  { spawn "fish" "-c" "gif edit"; }       // ⭐ Edit toggle
+    Mod+Shift+K  { spawn "fish" "-c" "gif kill-all"; }   // Cleanup
 }
-// Override to disable super+tab
+
+
+// ════════════════════════════════════════════════════════════════════
+//  RECENT WINDOWS (Alt+Tab)
+// ════════════════════════════════════════════════════════════════════
+
 recent-windows {
     binds {
-        Alt+Tab         { next-window scope="output"; }
-        Alt+Shift+Tab   { previous-window scope="output"; }
-        Alt+grave       { next-window filter="app-id"; }
+        Alt+Tab         { next-window scope="output"; }      // Nächstes Fenster (am gleichen Monitor)
+        Alt+Shift+Tab   { previous-window scope="output"; }  // Vorheriges Fenster
+        Alt+grave       { next-window filter="app-id"; }     // Zwischen App-Instanzen wechseln
         Alt+Shift+grave { previous-window filter="app-id"; }
     }
 }
 
-// Include dms files
 
-
-
-include "dms/binds.kdl"
-include "./noctalia.kdl"
-
-
-layer-rule {
-    match namespace="^vicinae$"
-}
